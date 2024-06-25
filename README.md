@@ -1,4 +1,4 @@
-### EvoDiff-AMP: Antimicrobial Peptide Generation and Evaluation
+### Leveraging Generative Protein Models for the Design and Classification of Novel Antimicrobial Peptides
 
 ## Overview
 
