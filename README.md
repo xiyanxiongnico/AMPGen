@@ -25,30 +25,34 @@ EvoDiff is employed to generate new AMP sequences through both unconditional and
 ## Project Structure
 
 ```
-EvoDiff-AMP/
+AMP_Gen/
 ├── data/
 │   ├── raw/
 │   ├── processed/
 ├── src/
-│   ├── generation/
-│   │   ├── evo_diff.py
-│   │   ├── unconditional_generation.py
-│   │   └── conditional_generation.py
+│   ├── analysis/
+│   │   ├── calculate_properties.py
 │   ├── classification/
-│   │   ├── feature_extraction.py
-│   │   ├── random_forest_classifier.py
-│   │   └── xgboost_classifier.py
-│   └── efficacy_prediction/
-│       ├── lstm_model.py
-│       └── language_model_embedding.py
-├── notebooks/
-│   ├── data_analysis.ipynb
-│   └── model_evaluation.ipynb
-├── results/
-│   ├── generated_sequences/
-│   └── model_predictions/
-└── README.md
-└── requirements.txt
+│   │   ├── classifier.py
+│   │   ├── features.py
+│   ├── generation/
+│   │   ├── unconditional_generation.py
+│   │   ├── unconditional_generation_msa.py
+│   │   └── conditional_generation_msa.py
+│   ├── notebooks/
+│   │   ├── data_analysis.ipynb
+│   │   └── model_evaluation.ipynb
+│   ├── results/
+│   │   ├── generated_sequences/
+│   │   └── model_predictions/
+├── tests/
+│   ├── __init__.py
+│   ├── test_generation.py
+│   └── # Other test scripts
+├── README.md
+├── requirements.txt
+└── setup.py
+
 ```
 
 ## Getting Started
