@@ -39,6 +39,8 @@ AMP_Gen/
 │   │   ├── unconditional_generation.py
 │   │   ├── unconditional_generation_msa.py
 │   │   └── conditional_generation_msa.py
+│   ├── prediction/
+│   │   ├── lstm_predict.py
 │   ├── notebooks/
 │   │   ├── data_analysis.ipynb
 │   │   └── model_evaluation.ipynb
@@ -52,7 +54,6 @@ AMP_Gen/
 ├── README.md
 ├── requirements.txt
 └── setup.py
-
 ```
 
 ## Getting Started
