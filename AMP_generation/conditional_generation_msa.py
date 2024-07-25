@@ -16,7 +16,8 @@ Outputs of the Function:
 	•	Excel File: An Excel file containing the results with columns for filename, number of sequences, reference sequence, reference length, generated sequence, and generated length.
 
 Command-Line Usage Example
-generate_conditional_msa_sequences --directory_path path/to/directory --output_csv_file path/to/output_file.csv --max_retries 5
+conditional_generation_msa --directory_path /path/to/msa/files --output_csv_file /path/to/output.csv --max_retries 5
+
 @author: xiyanxiong
 
 """

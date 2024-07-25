@@ -43,10 +43,10 @@ setup(
             'predict_mic=main:main',
             'train_amp_classifier=AMP_classifier.tools.XGboost_train:main',  # Entry point for training the AMP classifier
             'classify_amp=AMP_classifier.xgboost_model.classifier:main',  # Entry point for running the AMP classifier
-            'generate_unconditional_sequences=src.generation.unconditional_generation:generate_unconditional_sequences',
-            'generate_unconditional_msa_sequences=src.generation.unconditional_generation_msa:generate_unconditional_msa_sequences',
-            'generate_conditional_msa_sequences=src.generation.conditional_generation_msa:generate_conditional_msa_sequences',
-            'calculate_properties=src.analysis.calculate_properties:calculate_properties',
+            'unconditional_generation=AMP_generation.unconditional_generation:main',
+            'unconditional_generation_msa=AMP_generation.unconditional_generation_msa:main',
+            'conditional_generation_msa=AMP_generation.conditional_generation_msa:main',
+            'calculate_properties=AMP_generation.calculate_properties:main',
         ],
     },
 )

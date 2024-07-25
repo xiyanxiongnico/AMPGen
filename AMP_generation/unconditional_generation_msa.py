@@ -12,8 +12,7 @@ Outputs of the Function:
 	•	CSV File: A CSV file containing the generated sequences with their IDs and lengths.
 
 Command-Line Usage Example
-generate_unconditional_msa_sequences --total_sequences 10000 --batch_size 1 --n_sequences 16 --output_csv_file path/to/output_file.csv
-
+unconditional_generation_msa --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file /path/to/output.csv
 """
 
 import random

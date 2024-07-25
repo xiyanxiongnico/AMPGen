@@ -7,8 +7,7 @@ Created on Mon May 13 21:24:54 2024
 	3.	File Writing: The function saves the generated sequences to a CSV file specified by the user.
 
     command line usage example: 
-    generate_unconditional_sequences --total_sequences 10000 --batch_size 2 --output_file path/to/output_file.csv
-    
+    unconditional_generation --total_sequences 100 --batch_size 10 --output_file /path/to/output.csv
 @author: xiyanxiong
 """
 

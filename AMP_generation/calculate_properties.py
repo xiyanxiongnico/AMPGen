@@ -4,7 +4,7 @@
 """
 
 Command-Line Usage:
-    calculate_properties --input_csv_file path/to/input_file.csv --output_csv_file path/to/output_file.csv
+    calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path/to/output.csv
 
 """
 
