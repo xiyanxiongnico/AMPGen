@@ -16,7 +16,7 @@ EvoDiff is employed to generate new AMP sequences through both unconditional and
 ### Classification and Efficacy Prediction of Generated AMP Sequences
 
 1. **Classification**:
-   - A Random Forest classifier is constructed based on feature extraction and XGBoost classification to determine whether the generated sequences are antimicrobial peptides (AMPs).
+   - An XGBoost classifier is constructed based on feature extraction to determine whether the generated sequences are antimicrobial peptides (AMPs).
 
 2. **Efficacy Prediction**:
    - An LSTM model utilizing language model embedding techniques is developed to evaluate the antimicrobial efficacy of the generated sequences. The performance metric used is the minimum inhibitory concentration (MIC).
@@ -25,34 +25,36 @@ EvoDiff is employed to generate new AMP sequences through both unconditional and
 ## Project Structure
 
 ```
-AMP_Gen/
-├── data/
-│   ├── raw/
-│   ├── processed/
-├── src/
-│   ├── analysis/
-│   │   ├── calculate_properties.py
-│   ├── classification/
-│   │   ├── classifier.py
-│   │   ├── features.py
-│   ├── generation/
-│   │   ├── unconditional_generation.py
-│   │   ├── unconditional_generation_msa.py
-│   │   └── conditional_generation_msa.py
-│   ├── prediction/
-│   │   ├── lstm_predict.py
-│   ├── notebooks/
-│   │   ├── data_analysis.ipynb
-│   │   └── model_evaluation.ipynb
+AMPGen/
+├── AMP_classifier/
+│   ├── tools/
+│   ├── xgboost_model/
+│   └── xgboost_results/
+├── AMP_generation/
 │   ├── results/
-│   │   ├── generated_sequences/
-│   │   └── model_predictions/
-├── tests/
-│   ├── __init__.py
-│   ├── test_generation.py
-│   └── # Other test scripts
+│   ├── calculate_properties.py
+│   ├── conditional_generation_msa.py
+│   ├── unconditional_generation.py
+│   └── unconditional_generation_msa.py
+├── MIC_predictor/
+│   ├── lstm_model/
+│   ├── tools/
+│   └── main.py
+├── data/
+│   ├── esm_output/
+│   ├── raw/
+│   ├── test.csv
+│   ├── top14Featured_all.csv
+│   ├── 5_65_ecoli_mean_representations.csv
+│   ├── 5_65_stpa_mean_representations.csv
+│   ├── last5_65_ecoli_mean_representations.csv
+│   ├── last5_65_stpa_mean_representations.csv
+│   ├── seqs.fasta
+│   ├── train5_65_ecoli_mean_representations.csv
+│   └── train5_65_stpa_mean_representations.csv
+├── .DS_Store
+├── .gitignore
 ├── README.md
-├── requirements.txt
 └── setup.py
 ```
 
@@ -62,7 +64,7 @@ AMP_Gen/
 
 - Python 3.8 or higher
 - Anaconda for managing environments
-- Libraries: numpy, pandas, scikit-learn, xgboost, tensorflow, biopython
+- Libraries: numpy, pandas, scikit-learn, xgboost, torch, biopython, evodiff
 
 ### Installation
 
@@ -78,26 +80,50 @@ AMP_Gen/
    conda activate evodiff-amp
    ```
 
-3. Install the required libraries:
+3. Install the package:
    ```bash
-   pip install -r requirements.txt
+   pip install .
    ```
 
 ### Usage
 
 1. **Generate New AMP Sequences**:
+
+   - **Unconditional Generation**:
+     ```bash
+     unconditional_generation --total_sequences 100 --batch_size 10 --output_file /path/to/output.csv
+     ```
+
+   - **Unconditional Generation with MSA**:
+     ```bash
+     unconditional_generation_msa --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file /path/to/output.csv
+     ```
+
+   - **Conditional Generation with MSA**:
+     ```bash
+     conditional_generation_msa --directory_path /path/to/msa/files --output_csv_file /path/to/output.csv --max_retries 5
+     ```
+
+2. **Calculate Properties of Generated Sequences**:
    ```bash
-   python src/generation/evo_diff.py
+   calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path/to/output.csv
    ```
 
-2. **Classify and Predict Efficacy**:
-   ```bash
-   python src/classification/random_forest_classifier.py
-   python src/efficacy_prediction/lstm_model.py
-   ```
+3. **Classify and Predict Efficacy**:
+   - **Train AMP Classifier**:
+     ```bash
+     train_amp_classifier --data_path path/to/classify_all_data_v1.csv --model_output_path path/to/save/xgboost_model.pkl
+     ```
 
-3. **Analyze Results**:
-   Open the Jupyter notebooks in the `notebooks/` directory to analyze data and evaluate model performance.
+   - **Classify AMP**:
+     ```bash
+     classify_amp --train_path path/to/classify_all_data_v1.csv --pre_path path/to/new_sequences.csv --out_path path/to/save/predictions.csv
+     ```
+
+   - **Predict MIC Values**:
+     ```bash
+     predict_mic --from_csv_path path/to/input_file.csv --to_fasta_path path/to/output_fasta.fasta --esm_model_location esm2_t36_3B_UR50D --output_dir path/to/esm_output_dir --repr_layers 36 --scaler_data_path path/to/scaler.pkl --model_path path/to/model.pth --result_path path/to/result.csv
+     ```
 
 ## Contributing
 
