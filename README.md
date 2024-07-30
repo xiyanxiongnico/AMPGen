@@ -1,26 +1,37 @@
-### Leveraging Generative Protein Models for the Design and Classification of Novel Antimicrobial Peptides
+
+### AMPGen: A de novo Generation Pipeline Leveraging Evolutionary Information for Broad-Spectrum Antimicrobial Peptide Design
 
 ## Overview
 
-This project utilizes EvoDiff, a novel diffusion framework in protein design, to generate new antimicrobial peptide (AMP) sequences. The generated sequences are then classified and evaluated for their antimicrobial efficacy using a combination of machine learning models.
+AMPGen is a pipeline for generating and evaluating novel antimicrobial peptide (AMP) sequences. Using EvoDiff, a novel diffusion framework in protein design, AMPGen generates new AMP sequences and employs machine learning models to classify and predict their antimicrobial efficacy.
 
 ## Methods
 
-### Generation of New AMP Sequences Using EvoDiff
+### Datasets Preparation
 
-EvoDiff is employed to generate new AMP sequences through both unconditional and conditional generation methods:
+We compiled AMP and non-AMP datasets from various public databases for use in our classification and MIC prediction models. The AMP dataset includes sequences from APD, DADP, DBAASP, DRAMP, YADAMP, and dbAMP, resulting in a final set of 10,249 unique sequences with antibacterial targets. The non-AMP dataset, sourced from UniProt, consists of 11,989 sequences filtered to exclude those associated with specific antimicrobial keywords.
 
-- **Unconditional Generation**: Sequences are created from random noise by iteratively reversing the corruption process.
-- **Conditional Generation**: Utilizes evolutionary information encoded in Multiple Sequence Alignments (MSAs), enabling the generation of novel sequences guided by the evolutionary context of related proteins. From each MSA, five new sequences are generated based on the reference sequence and variations guided by the alignment sequences.
+### De Novo AMP Generation
 
-### Classification and Efficacy Prediction of Generated AMP Sequences
+AMP sequences are generated using two pre-trained order-agnostic autoregressive diffusion models (OADM):
 
-1. **Classification**:
-   - An XGBoost classifier is constructed based on feature extraction to determine whether the generated sequences are antimicrobial peptides (AMPs).
+1. **Sequence-Based Generation**:
+   - The sequence-based model, Evodiff-OA_DM_640M, is pre-trained on the Uniref50 dataset, containing 42 million protein sequences. This model unconditionally generates peptide sequences of length 15-35 aa.
 
-2. **Efficacy Prediction**:
-   - An LSTM model utilizing language model embedding techniques is developed to evaluate the antimicrobial efficacy of the generated sequences. The performance metric used is the minimum inhibitory concentration (MIC).
-   - Sequences predicted to be highly effective antimicrobial peptides are selected for experimental validation in wet lab conditions.
+2. **MSA-Based Generation**:
+   - The MSA-based model, Evodiff-MSA_OA_DM_MAXSUB, is trained on the OpenFold dataset and generates sequences in two ways:
+     - Unconditional generation of peptide sequences of length 15-35 aa.
+     - Conditional generation using MSAs with known AMP sequences as representative sequences.
+
+### Classification and Efficacy Prediction
+
+1. **XGBoost-based AMP Classifier**:
+   - The classifier is trained on features extracted from the AMP and non-AMP datasets. The final model is tuned using 10-fold cross-validation.
+
+2. **LSTM Regression-based MIC Predictor**:
+   - MIC values are predicted using separate LSTM models for Escherichia coli and Staphylococcus aureus. The datasets are split into training, validation, and test sets, and the models are trained using log-transformed MIC values.
+
+
 
 ## Project Structure
 
