@@ -26,12 +26,13 @@ AMP sequences are generated using two pre-trained order-agnostic autoregressive 
 ### Classification and Efficacy Prediction
 
 1. **XGBoost-based AMP Classifier**:
-   - The classifier is trained on features extracted from the AMP and non-AMP datasets. The final model is tuned using 10-fold cross-validation.
+   - **Dataset Preparation**: Sequences in the AMP dataset were filtered based on length, retaining those within the range of 5 to 65 aa, resulting in a total of 9,964 AMP-labeled peptide sequences as the positive dataset.
+   - **Feature Extraction**: Features were primarily derived from the PseKRAAC encoding method, QSOrder, and CKSAAP encoding parameters, resulting in 14 categories of 1,311 features.
+   - **Model Training**: The data was used to train an XGBoost model, with AMP sequences labeled as 1 and nonAMP sequences labeled as 0. Model tuning was conducted based on the F1 score and AUC index using 10-fold cross-validation (k-fold 10) to prevent overfitting.
 
 2. **LSTM Regression-based MIC Predictor**:
-   - MIC values are predicted using separate LSTM models for Escherichia coli and Staphylococcus aureus. The datasets are split into training, validation, and test sets, and the models are trained using log-transformed MIC values.
-
-
+   - **Dataset Preparation**: All entries in the AMP dataset with MIC values were included. The AMP sequences targeting Escherichia coli totaled 7,100, while those targeting Staphylococcus aureus totaled 6,482. Sequences with multiple MIC values targeting the same bacteria were averaged and converted to a uniform unit of μM. These values were then log-transformed (log₁₀). Additionally, 7,193 sequences from the nonAMP dataset were labeled with a logMIC value of 4.
+   - **Model Training**: Separate regression training was conducted on the Escherichia coli and Staphylococcus aureus datasets using Long Short-Term Memory (LSTM) models. The datasets were split into training, validation, and test sets in the ratio of 72:18:10. Each model comprised two LSTM layers, a dropout layer with a dropout rate of 0.7, and a linear layer. The models were compiled using standard L2 loss and optimized with the Adam optimizer.
 
 ## Project Structure
 
