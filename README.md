@@ -13,7 +13,7 @@ We compiled AMP and non-AMP datasets from various public databases for use in ou
 
 ### De Novo AMP Generation
 
-AMP sequences are generated using two pre-trained order-agnostic autoregressive diffusion models (OADM):
+AMP sequences are generated using two pre-trained order-agnostic autoregressive diffusion models (OADM) from the [EvoDiff framework](https://github.com/microsoft/evodiff) ([paper](https://www.biorxiv.org/content/10.1101/2023.09.11.556673v1)).
 
 1. **Sequence-Based Generation**:
    - The sequence-based model, Evodiff-OA_DM_640M, is pre-trained on the Uniref50 dataset, containing 42 million protein sequences. This model unconditionally generates peptide sequences of length 15-35 aa.
