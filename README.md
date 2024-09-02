@@ -72,27 +72,47 @@ AMPGen/
 
 ## Getting Started
 
+
+### Installation Guide
+
+Welcome to the AMPGen project! This guide will walk you through the steps required to install and set up the necessary environment and dependencies to run AMPGen. Before getting started, please ensure that you have Anaconda installed on your system.
+
 ### Prerequisites
 
-- Python 3.8 or higher
-- Anaconda for managing environments
-- Libraries: numpy, pandas, scikit-learn, xgboost, torch, biopython, evodiff
+To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. We'll guide you through setting up a clean conda environment, installing EvoDiff, and then the necessary dependencies.
 
-### Installation
+### Setting Up the Environment
 
-1. Clone the repository:
+1. **Clone the AMPGen Repository**  
+   Begin by cloning the AMPGen repository to your local machine:
    ```bash
-   git clone https://github.com/yourusername/EvoDiff-AMP.git
-   cd EvoDiff-AMP
+   git clone https://github.com/xiyanxiongnico/AMPGen.git
+   cd AMPGen
    ```
 
-2. Create and activate a conda environment:
+2. **Create a Conda Environment**  
+   Next, create a new conda environment with Python 3.8.5, which is the recommended version for this project:
    ```bash
-   conda create -n evodiff-amp python=3.8
+   conda create --name evodiff-amp python=3.8.5
    conda activate evodiff-amp
    ```
 
-3. Install the package:
+3. **Install EvoDiff**  
+   With the new environment activated, install the EvoDiff package, which is a crucial component of AMPGen:
+   ```bash
+   pip install evodiff
+   ```
+
+4. **Install PyTorch and Related Packages**  
+   EvoDiff requires specific versions of PyTorch and additional libraries. You can install them using the following commands:
+   ```bash
+   conda install pytorch torchvision torchaudio cpuonly -c pytorch
+   conda install pyg -c pyg
+   conda install -c conda-forge torch-scatter
+   ```
+
+5. **Install AMPGen and Remaining Dependencies**  
+   Finally, install the AMPGen package along with any remaining dependencies:
    ```bash
    pip install .
    ```
