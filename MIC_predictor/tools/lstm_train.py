@@ -10,31 +10,31 @@ import matplotlib.pyplot as plt
 import os
 import pickle
 
-# 加载数据
+# Load data
 data = pd.read_csv('/media/zzh/data/AMP/LSTMregrssion/data/train5_65_stpa_mean_representations.csv')
 
 # x as feature y as logMIC
 X = data.iloc[:, 1:-1].values
 y = data.iloc[:, -1].values
 
-# 数据标准化
+# Data normalization
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
-# 保存标准化器
+# Save the standardizer
 with open('/media/zzh/data/AMP/LSTMregrssion/LSTM_model/stpascaler.pkl', 'wb') as f:
     pickle.dump(scaler, f)
-# 转换为张量
+# convert data into a tensor 
 X = torch.tensor(X, dtype=torch.float32)
-y = torch.tensor(y, dtype=torch.float32)  # 使用 float 类型以适应 MSELoss
+y = torch.tensor(y, dtype=torch.float32)  # Use float type to be compatible with MSELoss
 
-# 数据集划分（保留 20% 作为验证集）
+# Dataset splitting (retain 20% as a validation set)
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# 创建数据加载器
+# Create a data loader
 train_dataset = TensorDataset(X_train.unsqueeze(1), y_train)
 val_dataset = TensorDataset(X_val.unsqueeze(1), y_val)
 
-# 定义LSTM模型
+# Define an LSTM model
 class LSTMModel(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, output_size, dropout_rate):
         super(LSTMModel, self).__init__()
@@ -51,7 +51,7 @@ class LSTMModel(nn.Module):
         out = self.fc(out)
         return out
 
-# 训练和验证函数
+# Training and validation functions
 def train_and_validate(model, criterion, optimizer, scheduler, train_loader, val_loader, num_epochs, params):
     train_losses = []
     val_losses = []
@@ -59,13 +59,13 @@ def train_and_validate(model, criterion, optimizer, scheduler, train_loader, val
     # patience_counter = 0
 
     for epoch in range(num_epochs):
-        # 训练阶段
+        # Training phase
         model.train()
         train_loss = 0
         for X_batch, y_batch in train_loader:
             X_batch, y_batch = X_batch.to(device), y_batch.to(device)
             outputs = model(X_batch)
-            loss = criterion(outputs.squeeze(), y_batch)  # 修改为 outputs.squeeze() 以匹配 y_batch 维度
+            loss = criterion(outputs.squeeze(), y_batch)  
             
             optimizer.zero_grad()
             loss.backward()
@@ -73,7 +73,7 @@ def train_and_validate(model, criterion, optimizer, scheduler, train_loader, val
             
             train_loss += loss.item()
         
-        # 验证阶段
+        # Validation phase
         model.eval()
         val_loss = 0
         y_true = []
@@ -82,7 +82,7 @@ def train_and_validate(model, criterion, optimizer, scheduler, train_loader, val
             for X_batch, y_batch in val_loader:
                 X_batch, y_batch = X_batch.to(device), y_batch.to(device)
                 outputs = model(X_batch)
-                loss = criterion(outputs.squeeze(), y_batch)  # 修改为 outputs.squeeze() 以匹配 y_batch 维度
+                loss = criterion(outputs.squeeze(), y_batch)  
                 val_loss += loss.item()
                 y_true.extend(y_batch.cpu().numpy())
                 y_pred.extend(outputs.squeeze().cpu().numpy())
@@ -90,11 +90,11 @@ def train_and_validate(model, criterion, optimizer, scheduler, train_loader, val
         train_losses.append(train_loss / len(train_loader))
         val_losses.append(val_loss / len(val_loader))
         
-        # 计算R²
+        # calculated R²
         r2 = r2_score(y_true, y_pred)
         print(f'Epoch {epoch+1}/{num_epochs}, Train Loss: {train_losses[-1]}, Val Loss: {val_losses[-1]}, R²: {r2}, Params: {params}')
         
-        # 保存最好的模型
+        # save best model
         if r2 > best_r2:
             best_r2 = r2
             patience_counter = 0
@@ -103,10 +103,10 @@ def train_and_validate(model, criterion, optimizer, scheduler, train_loader, val
         else:
             patience_counter += 1
         
-        # 更新学习率
+        # Update the learning rate
         scheduler.step(val_loss)
 
-        # 早停策略
+        
         # if patience_counter >= patience:
         #     print(f'Early stopping at epoch {epoch+1}')
         #     break
@@ -132,7 +132,7 @@ def evaluate_model(model, val_loader):
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-    # 确定的超参数
+    # Defined hyperparameters
     best_params = {
         'hidden_size': 128,
         'num_layers': 2,
@@ -140,11 +140,11 @@ if __name__ == "__main__":
         'batch_size': 64,
         'num_epochs': 200,
         'dropout_rate': 0.7,
-        'weight_decay': 0.0001,  # 添加 weight_decay 参数以实现 L2 正则化
-        # 'patience': 10  # 早停策略的耐心参数
+        'weight_decay': 0.0001,  # Add the weight_decay parameter to implement L2 regularization
+        # 'patience': 10  # The patience parameter for the early stopping strategy
     }
 
-    # 使用最佳参数训练模型
+    # Train the model using the best parameters
     model = LSTMModel(input_size=X_train.size(1), hidden_size=best_params['hidden_size'], num_layers=best_params['num_layers'], output_size=1, dropout_rate=best_params['dropout_rate']).to(device)
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=best_params['learning_rate'], weight_decay=best_params['weight_decay'])
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     
     train_losses, val_losses = train_and_validate(model, criterion, optimizer, scheduler, train_loader, val_loader, best_params['num_epochs'], best_params)
     
-    # 绘制训练和验证损失曲线
+    # Plot the training and validation loss curves
     plt.figure(figsize=(10, 5))
     plt.plot(train_losses, label='Train Loss')
     plt.plot(val_losses, label='Validation Loss')
@@ -165,19 +165,19 @@ if __name__ == "__main__":
     plt.title('Train and Validation Loss')
     plt.show()
     
-    # 加载验证集上表现最好的模型
+    # Load the model that performed best on the validation set
     model.load_state_dict(torch.load('/media/zzh/data/AMP/LSTMregrssion/LSTM_model/4stpa_best_model_checkpoint.pth'))
 
-    # 验证最终模型并计算 MSE 和 R²
+    # Validate the final model and calculate MSE and R²
     mse, r2, y_true, y_pred = evaluate_model(model, val_loader)
 
     print(f"Final MSE: {mse}")
     print(f"Final R²: {r2}")
 
-    # 绘制预测值和真实值的曲线图
+    # Plot the curve of predicted values and true values
     plt.figure(figsize=(20, 7))
 
-    # 仅显示前500个样本
+    # Display only the first 500 samples
     n_samples_to_plot = 50
     plt.plot(y_true[:n_samples_to_plot], label='True Values', alpha=0.7)
     plt.plot(y_pred[:n_samples_to_plot], label='Predicted Values', alpha=0.7)
