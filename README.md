@@ -37,37 +37,134 @@ AMP sequences are generated using two pre-trained order-agnostic autoregressive 
 ## Project Structure
 
 ```
-AMPGen/
-├── AMP_classifier/
-│   ├── tools/
-│   ├── xgboost_model/
-│   └── xgboost_results/
-├── AMP_generation/
-│   ├── results/
-│   ├── calculate_properties.py
-│   ├── conditional_generation_msa.py
-│   ├── unconditional_generation.py
-│   └── unconditional_generation_msa.py
-├── MIC_predictor/
-│   ├── lstm_model/
-│   ├── tools/
-│   └── main.py
-├── data/
-│   ├── esm_output/
-│   ├── raw/
-│   ├── test.csv
-│   ├── top14Featured_all.csv
-│   ├── 5_65_ecoli_mean_representations.csv
-│   ├── 5_65_stpa_mean_representations.csv
-│   ├── last5_65_ecoli_mean_representations.csv
-│   ├── last5_65_stpa_mean_representations.csv
-│   ├── seqs.fasta
-│   ├── train5_65_ecoli_mean_representations.csv
-│   └── train5_65_stpa_mean_representations.csv
-├── .DS_Store
-├── .gitignore
-├── README.md
-└── setup.py
+── AMPGen
+    ├── AMP_discriminator
+    │   ├── Discriminator_model
+    │   │   ├── iFeature
+    │   │   │   ├── codes
+    │   │   │   │   ├── __init__.py
+    │   │   │   │   ├── AAC.py
+    │   │   │   │   ├── AAINDEX.py
+    │   │   │   │   ├── APAAC.py
+    │   │   │   │   ├── ASA.py
+    │   │   │   │   ├── BINARY.py
+    │   │   │   │   ├── BLOSUM62.py
+    │   │   │   │   ├── checkFasta.py
+    │   │   │   │   ├── CKSAAGP.py
+    │   │   │   │   ├── CKSAAP.py
+    │   │   │   │   ├── CTDC.py
+    │   │   │   │   ├── CTDCClass.py
+    │   │   │   │   ├── CTDD.py
+    │   │   │   │   ├── CTDDClass.py
+    │   │   │   │   ├── CTDT.py
+    │   │   │   │   ├── CTDTClass.py
+    │   │   │   │   ├── CTriad.py
+    │   │   │   │   ├── DDE.py
+    │   │   │   │   ├── Disorder.py
+    │   │   │   │   ├── DisorderB.py
+    │   │   │   │   ├── DisorderC.py
+    │   │   │   │   ├── DPC.py
+    │   │   │   │   ├── EAAC.py
+    │   │   │   │   ├── EGAAC.py
+    │   │   │   │   ├── GAAC.py
+    │   │   │   │   ├── GDPC.py
+    │   │   │   │   ├── Geary.py
+    │   │   │   │   ├── GTPC.py
+    │   │   │   │   ├── KNNpeptide.py
+    │   │   │   │   ├── KNNprotein.py
+    │   │   │   │   ├── KNNprotein.v1.py
+    │   │   │   │   ├── KSCTriad.py
+    │   │   │   │   ├── Moran.py
+    │   │   │   │   ├── NeedlemanWunsch.py
+    │   │   │   │   ├── NMBroto.py
+    │   │   │   │   ├── PAAC.py
+    │   │   │   │   ├── PSSM.py
+    │   │   │   │   ├── QSOrder.py
+    │   │   │   │   ├── readFasta.py
+    │   │   │   │   ├── saveCode.py
+    │   │   │   │   ├── SOCNumber.py
+    │   │   │   │   ├── SSEB.py
+    │   │   │   │   ├── SSEC.py
+    │   │   │   │   ├── TA.py
+    │   │   │   │   ├── TPC.py
+    │   │   │   │   └── ZSCALE.py
+    │   │   ├── data
+    │   │   │   ├── AAidx.csv
+    │   │   │   ├── AAidx.txt
+    │   │   │   ├── AAindex.txt
+    │   │   │   ├── blosum62.txt
+    │   │   │   ├── CTD.txt
+    │   │   │   ├── Grantham.txt
+    │   │   │   ├── PAAC.txt
+    │   │   │   └── Schneider-Wrede.txt
+    │   │   └── PseKRAAC
+    │   │       ├── __init__.py
+    │   │       ├── type1.py
+    │   │       ├── type10.py
+    │   │       ├── type11.py
+    │   │       ├── type12.py
+    │   │       ├── type13.py
+    │   │       ├── type14.py
+    │   │       ├── type15.py
+    │   │       ├── type16.py
+    │   │       ├── type2.py
+    │   │       ├── type3A.py
+    │   │       ├── type3B.py
+    │   │       ├── type4.py
+    │   │       ├── type5.py
+    │   │       ├── type6A.py
+    │   │       ├── type6B.py
+    │   │       ├── type6C.py
+    │   │       ├── type7.py
+    │   │       ├── type8.py
+    │   │       └── type9.py
+    │   ├── discriminator.py
+    │   └── features.py
+    ├── tools
+    │   ├── plt.ipynb
+    │   ├── RF_train.py
+    │   ├── split.py
+    │   └── XGboost_train.py
+    ├── AMP_generator
+    │   ├── calculate_properties.py
+    │   ├── conditional_generation_msa.py
+    │   ├── unconditional_generation.py
+    │   └── unconditional_generation_msa.py
+    ├── data
+    │   ├── Discriminator_training_data
+    │   │   ├── classify_all_data_v1.csv
+    │   │   ├── classify_amp_v1.csv
+    │   │   ├── classify_nonamp_v1.csv
+    │   │   └── top14Featured_all.csv
+    │   ├── Scorer_training_data
+    │   │   ├── regression_ecoli_all.csv
+    │   │   └── regression_stpa_all.csv
+    │   ├── combined_database_filtered_v2(1).xlsx
+    │   └── combined_database_v2(1).xlsx
+    ├── MIC_scorer
+    │   ├── results
+    │   │   └── updatedecolipredictions.csv
+    │   ├── Scorer_model
+    │   │   ├── 1stpa_best_model_checkpoint.pth
+    │   │   ├── 2ecoli_best_model_checkpoint.pth
+    │   │   ├── ecoliscaler.pkl
+    │   │   ├── regression.py
+    │   │   └── stpascaler.pkl
+    │   ├── tools
+    │   │   ├── embeddingload.py
+    │   │   ├── extract.py
+    │   │   ├── lstm_train.py
+    │   │   ├── pltlstm.ipynb
+    │   │   └── tofasta.py
+    │   └── scorer.py
+    ├── .DS_Store
+    ├── .gitattributes
+    ├── .gitignore
+    ├── LICENSE
+    ├── print_directory_tree.py
+    ├── README.md
+    ├── setup.py
+    └── test.py
 ```
 
 ## Getting Started

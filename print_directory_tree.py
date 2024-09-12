@@ -21,7 +21,7 @@ def print_directory_tree(path, prefix=""):
             print_directory_tree(os.path.join(path, item), new_prefix)
 
 # Specify the path of the directory
-project_path = "/Users/nicholexiong/Downloads/AMPGen/AMP_classifier"
+project_path = "/Users/nicholexiong/Downloads/AMPGen"
 
 # Print the directory structure
 print_directory_tree(project_path)
