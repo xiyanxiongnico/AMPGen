@@ -72,14 +72,13 @@ AMPGen/
 
 ## Getting Started
 
-
 ### Installation Guide
 
 Welcome to the AMPGen project! This guide will walk you through the steps required to install and set up the necessary environment and dependencies to run AMPGen. Before getting started, please ensure that you have Anaconda installed on your system.
 
 ### Prerequisites
 
-To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. We'll guide you through setting up a clean conda environment, installing EvoDiff, and then the necessary dependencies.
+To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. We'll guide you through setting up a clean conda environment, installing EvoDiff, and then the necessary dependencies. Required Python libraries: `numpy`, `pandas`, `tqdm`, `scikit-learn`, `xgboost`.
 
 ### Setting Up the Environment
 
@@ -104,58 +103,128 @@ To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. W
    ```
 
 4. **Install PyTorch and Related Packages**  
-   EvoDiff requires specific versions of PyTorch and additional libraries. You can install them using the following commands:
+   EvoDiff requires specific versions of PyTorch and additional libraries. Install them using the following commands:
    ```bash
    conda install pytorch torchvision torchaudio cpuonly -c pytorch
    conda install pyg -c pyg
    conda install -c conda-forge torch-scatter
    ```
 
-5. **Install AMPGen and Remaining Dependencies**  
-   Finally, install the AMPGen package along with any remaining dependencies:
+5. **Install the Other Required Dependencies for the Classifier and MIC Scorer**  
+   The AMPGen package requires several additional dependencies to run the classifier and MIC scorer. You can install them using the following command:
    ```bash
-   pip install .
+   pip install numpy pandas tqdm scikit-learn xgboost fair-esm matplotlib torch torchvision torchaudio pickle
+   ``` 
+
+These packages include the required libraries for both the XGBoost-based classifier (`scikit-learn`, `xgboost`, etc.) and the MIC scorer (`torch`, `ProteinBertModel`, `MSATransformer`, `matplotlib`, etc.).
+
+---
+
+### Usage Guide
+
+#### 1. **Generate New AMP Sequences**
+
+You can generate AMP sequences using the following commands:
+
+- **Unconditional Generation**:
+   ```bash
+   unconditional_generation --total_sequences 100 --batch_size 10 --output_file /path/to/output.csv
    ```
 
-### Usage
-
-1. **Generate New AMP Sequences**:
-
-   - **Unconditional Generation**:
-     ```bash
-     unconditional_generation --total_sequences 100 --batch_size 10 --output_file /path/to/output.csv
-     ```
-
-   - **Unconditional Generation with MSA**:
-     ```bash
-     unconditional_generation_msa --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file /path/to/output.csv
-     ```
-
-   - **Conditional Generation with MSA**:
-     ```bash
-     conditional_generation_msa --directory_path /path/to/msa/files --output_csv_file /path/to/output.csv --max_retries 5
-     ```
-
-2. **Calculate Properties of Generated Sequences**:
+- **Unconditional Generation with MSA**:
    ```bash
-   calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path/to/output.csv
+   unconditional_generation_msa --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file /path/to/output.csv
    ```
 
-3. **Classify and Predict Efficacy**:
-   - **Train AMP Classifier**:
-     ```bash
-     train_amp_classifier --data_path path/to/classify_all_data_v1.csv --model_output_path path/to/save/xgboost_model.pkl
-     ```
+- **Conditional Generation with MSA**:
+   ```bash
+   conditional_generation_msa --directory_path /path/to/msa/files --output_csv_file /path/to/output.csv --max_retries 5
+   ```
 
-   - **Classify AMP**:
-     ```bash
-     classify_amp --train_path path/to/classify_all_data_v1.csv --pre_path path/to/new_sequences.csv --out_path path/to/save/predictions.csv
-     ```
+#### 2. **Calculate Properties of Generated Sequences**
 
-   - **Predict MIC Values**:
-     ```bash
-     predict_mic --from_csv_path path/to/input_file.csv --to_fasta_path path/to/output_fasta.fasta --esm_model_location esm2_t36_3B_UR50D --output_dir path/to/esm_output_dir --repr_layers 36 --scaler_data_path path/to/scaler.pkl --model_path path/to/model.pth --result_path path/to/result.csv
-     ```
+Calculate properties of the generated sequences using the following command:
+```bash
+calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path/to/output.csv
+```
+
+---
+
+### 3. **Classify AMP Candidates**
+
+The following steps guide you through feature extraction, model training, and classifying new AMP candidates.
+
+#### **Feature Extraction**
+Before training the AMP classifier, you must extract features from the sequence data:
+
+- **Extract Features**:
+   ```bash
+   python src/classification/features.py
+   ```
+   This command processes the input CSV file containing sequence data and generates a CSV file (`top14test.csv`) with extracted features.
+
+#### **Train AMP Classifier**
+Once the features are extracted, you can proceed to train the classifier:
+
+- **Train the Classifier**:
+   ```bash
+   train_amp_classifier --data_path path/to/classify_all_data_v1.csv --model_output_path path/to/save/xgboost_model.pkl
+   ```
+   This command trains the XGBoost classifier using the specified feature data and saves the model to the given output path.
+
+#### **Classify New AMP Candidates**
+After training the classifier, you can classify new sequences to predict whether they are antimicrobial peptides (AMPs):
+
+- **Classify AMP**:
+   ```bash
+   classify_amp --train_path path/to/classify_all_data_v1.csv --pre_path path/to/new_sequences.csv --out_path path/to/save/predictions.csv
+   ```
+   This command uses the trained model to classify new sequences from the `new_sequences.csv` file and saves the predictions in the specified output path.
+
+---
+
+### 4. **Run the MIC Scorer**
+
+This section provides a step-by-step guide to using the MIC scorer. The scorer predicts the MIC (Minimum Inhibitory Concentration) values using a pre-trained LSTM model based on protein embeddings generated by an ESM model.
+
+#### **Step 1: Convert Sequences to FASTA Format**
+Use the `to_fasta` function to convert your input CSV file (which contains sequences) into a FASTA file:
+```bash
+python mic_scorer.py --from_csv_path path/to/sequences.csv --to_fasta_path path/to/output/sequences.fasta
+```
+
+#### **Step 2: Generate Embeddings with ESM Model**
+Once the sequences are in FASTA format, generate their embeddings using the `get_embedding` function and a pre-trained ESM model:
+```bash
+python mic_scorer.py --from_csv_path path/to/sequences.csv --esm_model_location esm_model_name --output_dir path/to/output/embeddings/
+```
+- Replace `esm_model_name` with the location of your ESM model (e.g., `esm2_t36_3B_UR50D`).
+- The embeddings will be saved to the specified output directory.
+
+#### **Step 3: Load Embeddings**
+Use the `load_embeding` function to load the generated embeddings and merge them with the input sequence data:
+```bash
+python mic_scorer.py --from_csv_path path/to/sequences.csv --output_dir path/to/output/embeddings/
+```
+
+#### **Step 4: Predict MIC Values**
+Finally, predict MIC values using a pre-trained LSTM model. The `get_predicted_mic` function handles this task:
+```bash
+python mic_scorer.py --from_csv_path path/to/sequences.csv --scaler_data_path path/to/scaler.pkl --model_path path/to/model.pth --result_path path/to/save/results.csv
+```
+
+#### **Full Command Example**
+Run the entire MIC scoring process from sequence conversion to MIC prediction:
+```bash
+python mic_scorer.py --from_csv_path path/to/sequences.csv --to_fasta_path path/to/output/sequences.fasta --esm_model_location esm2_t36_3B_UR50D --output_dir path/to/output/embeddings/ --scaler_data_path path/to/scaler.pkl --model_path path/to/model.pth --result_path path/to/save/results.csv
+```
+
+This command:
+1. Converts the sequences to FASTA format.
+2. Generates embeddings using the specified ESM model.
+3. Loads the embeddings and prepares the data.
+4. Predicts MIC values using the pre-trained LSTM model.
+
 
 ## Contributing
 
