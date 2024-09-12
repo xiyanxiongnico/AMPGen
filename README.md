@@ -189,8 +189,8 @@ To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. W
 2. **Create a Conda Environment**  
    Next, create a new conda environment with Python 3.8.5, which is the recommended version for this project:
    ```bash
-   conda create --name evodiff-amp python=3.8.5
-   conda activate evodiff-amp
+   conda create --name AMPGen python=3.8.5
+   conda activate AMPGen
    ```
 
 3. **Install EvoDiff**  
@@ -247,9 +247,9 @@ calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path
 
 ---
 
-### 3. **Classify AMP Candidates**
+### 3. **Identify AMP Candidates**
 
-The following steps guide you through feature extraction, model training, and classifying new AMP candidates.
+The following steps guide you through feature extraction, model training, and identifying new AMP candidates.
 
 #### **Feature Extraction**
 Before training the AMP classifier, you must extract features from the sequence data:
@@ -260,23 +260,23 @@ Before training the AMP classifier, you must extract features from the sequence 
    ```
    This command processes the input CSV file containing sequence data and generates a CSV file (`top14test.csv`) with extracted features.
 
-#### **Train AMP Classifier**
-Once the features are extracted, you can proceed to train the classifier:
+#### **Train AMP Discriminator**
+Once the features are extracted, you can proceed to train the discriminator:
 
-- **Train the Classifier**:
+- **Train the Discriminator**:
    ```bash
    train_amp_classifier --data_path path/to/classify_all_data_v1.csv --model_output_path path/to/save/xgboost_model.pkl
    ```
-   This command trains the XGBoost classifier using the specified feature data and saves the model to the given output path.
+   This command trains the XGBoost discriminator using the specified feature data and saves the model to the given output path.
 
-#### **Classify New AMP Candidates**
-After training the classifier, you can classify new sequences to predict whether they are antimicrobial peptides (AMPs):
+#### **Identify New AMP Candidates**
+After training the discriminator, you can identify new sequences to predict whether they are antimicrobial peptides (AMPs):
 
-- **Classify AMP**:
+- **Identify AMP**:
    ```bash
    classify_amp --train_path path/to/classify_all_data_v1.csv --pre_path path/to/new_sequences.csv --out_path path/to/save/predictions.csv
    ```
-   This command uses the trained model to classify new sequences from the `new_sequences.csv` file and saves the predictions in the specified output path.
+   This command uses the trained model to identify new sequences from the `new_sequences.csv` file and saves the predictions in the specified output path.
 
 ---
 
