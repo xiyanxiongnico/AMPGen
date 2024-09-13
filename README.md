@@ -42,89 +42,15 @@ AMP sequences are generated using two pre-trained order-agnostic autoregressive 
     │   ├── Discriminator_model
     │   │   ├── iFeature
     │   │   │   ├── codes
-    │   │   │   │   ├── __init__.py
-    │   │   │   │   ├── AAC.py
-    │   │   │   │   ├── AAINDEX.py
-    │   │   │   │   ├── APAAC.py
-    │   │   │   │   ├── ASA.py
-    │   │   │   │   ├── BINARY.py
-    │   │   │   │   ├── BLOSUM62.py
-    │   │   │   │   ├── checkFasta.py
-    │   │   │   │   ├── CKSAAGP.py
-    │   │   │   │   ├── CKSAAP.py
-    │   │   │   │   ├── CTDC.py
-    │   │   │   │   ├── CTDCClass.py
-    │   │   │   │   ├── CTDD.py
-    │   │   │   │   ├── CTDDClass.py
-    │   │   │   │   ├── CTDT.py
-    │   │   │   │   ├── CTDTClass.py
-    │   │   │   │   ├── CTriad.py
-    │   │   │   │   ├── DDE.py
-    │   │   │   │   ├── Disorder.py
-    │   │   │   │   ├── DisorderB.py
-    │   │   │   │   ├── DisorderC.py
-    │   │   │   │   ├── DPC.py
-    │   │   │   │   ├── EAAC.py
-    │   │   │   │   ├── EGAAC.py
-    │   │   │   │   ├── GAAC.py
-    │   │   │   │   ├── GDPC.py
-    │   │   │   │   ├── Geary.py
-    │   │   │   │   ├── GTPC.py
-    │   │   │   │   ├── KNNpeptide.py
-    │   │   │   │   ├── KNNprotein.py
-    │   │   │   │   ├── KNNprotein.v1.py
-    │   │   │   │   ├── KSCTriad.py
-    │   │   │   │   ├── Moran.py
-    │   │   │   │   ├── NeedlemanWunsch.py
-    │   │   │   │   ├── NMBroto.py
-    │   │   │   │   ├── PAAC.py
-    │   │   │   │   ├── PSSM.py
-    │   │   │   │   ├── QSOrder.py
-    │   │   │   │   ├── readFasta.py
-    │   │   │   │   ├── saveCode.py
-    │   │   │   │   ├── SOCNumber.py
-    │   │   │   │   ├── SSEB.py
-    │   │   │   │   ├── SSEC.py
-    │   │   │   │   ├── TA.py
-    │   │   │   │   ├── TPC.py
-    │   │   │   │   └── ZSCALE.py
-    │   │   ├── data
-    │   │   │   ├── AAidx.csv
-    │   │   │   ├── AAidx.txt
-    │   │   │   ├── AAindex.txt
-    │   │   │   ├── blosum62.txt
-    │   │   │   ├── CTD.txt
-    │   │   │   ├── Grantham.txt
-    │   │   │   ├── PAAC.txt
-    │   │   │   └── Schneider-Wrede.txt
-    │   │   └── PseKRAAC
-    │   │       ├── __init__.py
-    │   │       ├── type1.py
-    │   │       ├── type10.py
-    │   │       ├── type11.py
-    │   │       ├── type12.py
-    │   │       ├── type13.py
-    │   │       ├── type14.py
-    │   │       ├── type15.py
-    │   │       ├── type16.py
-    │   │       ├── type2.py
-    │   │       ├── type3A.py
-    │   │       ├── type3B.py
-    │   │       ├── type4.py
-    │   │       ├── type5.py
-    │   │       ├── type6A.py
-    │   │       ├── type6B.py
-    │   │       ├── type6C.py
-    │   │       ├── type7.py
-    │   │       ├── type8.py
-    │   │       └── type9.py
-    │   ├── discriminator.py
-    │   └── features.py
-    ├── tools
-    │   ├── plt.ipynb
-    │   ├── RF_train.py
-    │   ├── split.py
-    │   └── XGboost_train.py
+    │   │   │   ├── data
+    │   │   │   └── PseKRAAC
+    │   │   ├── discriminator.py
+    │   │   └── features.py
+    │   └── tools
+    │       ├── plt.ipynb
+    │       ├── RF_train.py
+    │       ├── split.py
+    │       └── XGboost_train.py
     ├── AMP_generator
     │   ├── calculate_properties.py
     │   ├── conditional_generation_msa.py
