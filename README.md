@@ -133,7 +133,7 @@ To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. W
    conda install -c conda-forge torch-scatter
    ```
 
-5. **Install the Other Required Dependencies for the Classifier and MIC Scorer**  
+5. **Install the Other Required Dependencies for the Discriminator and MIC Scorer**  
    The AMPGen package requires several additional dependencies to run the discriminator and MIC scorer. You can install them using the following command:
    ```bash
    pip install numpy pandas tqdm scikit-learn xgboost fair-esm matplotlib torch torchvision torchaudio pickle
