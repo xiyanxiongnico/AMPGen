@@ -134,12 +134,12 @@ To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. W
    ```
 
 5. **Install the Other Required Dependencies for the Classifier and MIC Scorer**  
-   The AMPGen package requires several additional dependencies to run the classifier and MIC scorer. You can install them using the following command:
+   The AMPGen package requires several additional dependencies to run the discriminator and MIC scorer. You can install them using the following command:
    ```bash
    pip install numpy pandas tqdm scikit-learn xgboost fair-esm matplotlib torch torchvision torchaudio pickle
    ``` 
 
-These packages include the required libraries for both the XGBoost-based classifier (`scikit-learn`, `xgboost`, etc.) and the MIC scorer (`torch`, `ProteinBertModel`, `MSATransformer`, `matplotlib`, etc.).
+These packages include the required libraries for both the XGBoost-based discriminator (`scikit-learn`, `xgboost`, etc.) and the MIC scorer (`torch`, `ProteinBertModel`, `MSATransformer`, `matplotlib`, etc.).
 
 ---
 
