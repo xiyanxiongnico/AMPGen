@@ -126,7 +126,7 @@ To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. W
    ```
 
 4. **Install PyTorch and Related Packages**  
-   EvoDiff requires specific versions of PyTorch and additional libraries. Install them using the following commands:
+   EvoDiff requires PyTorch along with additional libraries. The following example demonstrates the installation of a CPU-compatible version of PyTorch. For optimal performance, adjust the pytorch version based on your system’s specifications. Install the required packages using the following commands:
    ```bash
    conda install pytorch torchvision torchaudio cpuonly -c pytorch
    conda install pyg -c pyg
