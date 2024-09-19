@@ -149,62 +149,117 @@ These packages include the required libraries for both the XGBoost-based classif
 
 You can generate AMP sequences using the following commands:
 
-- **Unconditional Generation**:
-   ```bash
-   unconditional_generation --total_sequences 100 --batch_size 10 --output_file /path/to/output.csv
-   ```
 
-- **Unconditional Generation with MSA**:
-   ```bash
-   unconditional_generation_msa --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file /path/to/output.csv
-   ```
+### Unconditional Generation of AMP Sequences
 
-- **Conditional Generation with MSA**:
-   ```bash
-   conditional_generation_msa --directory_path /path/to/msa/files --output_csv_file /path/to/output.csv --max_retries 5
-   ```
+You can generate antimicrobial peptide (AMP) sequences using EvoDiff's unconditional generation model by running the following command:
+
+```bash
+python unconditional_generation.py --total_sequences <total_sequences> --batch_size <batch_size> --output_file <path_to_output_file>
+```
+
+#### Arguments:
+- `--total_sequences` (int, required): The total number of sequences to generate.
+- `--batch_size` (int, required): The batch size for sequence generation.
+- `--output_file` (str, required): The path to the output CSV file where the generated sequences will be saved.
+
+#### Example:
+```bash
+python unconditional_generation.py --total_sequences 100 --batch_size 10 --output_file ./data/generated_sequences.csv
+```
+
+This command will generate 100 sequences in batches of 10 and save them to `generated_sequences.csv`.
+
+
+
+### Unconditional Generation of AMP Sequences with MSA
+
+You can generate antimicrobial peptide (AMP) sequences using EvoDiff's unconditional generation model with MSA by running the following command:
+
+```bash
+python unconditional_generation_msa.py --total_sequences <total_sequences> --batch_size <batch_size> --n_sequences <n_sequences> --output_csv_file <path_to_output_file>
+```
+
+#### Arguments:
+- `--total_sequences` (int, required): The total number of sequences to generate.
+- `--batch_size` (int, required): The batch size for sequence generation.
+- `--n_sequences` (int, required): The number of sequences in MSA to subsample.
+- `--output_csv_file` (str, required): The path to the output CSV file where the generated sequences will be saved.
+
+#### Example:
+```bash
+python unconditional_generation_msa.py --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file ./data/generated_msa_sequences.csv
+```
+
+This command will generate 100 sequences in batches of 10 and save them to `generated_msa_sequences.csv`.
+
+
+### Conditional Generation of AMP Sequences with MSA
+
+You can generate antimicrobial peptide (AMP) sequences using EvoDiff's conditional generation model with MSA by running the following command:
+
+```bash
+python conditional_generation_msa.py --directory_path <path_to_msa_directory> --output_csv_file <path_to_output_file> --max_retries <max_retries>
+```
+
+#### Arguments:
+- `--directory_path` (str, required): Path to the directory containing the MSA files (in `.a3m` format).
+- `--output_csv_file` (str, required): The path to the output CSV file where the generated sequences will be saved.
+- `--max_retries` (int, optional): Maximum number of retries for processing each file (default: 5).
+
+#### Example:
+```bash
+python conditional_generation_msa.py --directory_path ./msa_files/ --output_csv_file ./data/conditional_generated_sequences.csv --max_retries 5
+```
+
+This command will process MSA files from the `msa_files` directory and generate sequences, saving the results to `conditional_generated_sequences.csv`.
+
 
 #### 2. **Calculate Properties of Generated Sequences**
 
-Calculate properties of the generated sequences using the following command:
+
+### Calculate Properties of Generated AMP Sequences
+
+You can calculate the physical and chemical properties of the generated AMP sequences, including molecular weight, net charge, and hydrophobicity, by running the following command:
+
 ```bash
-calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path/to/output.csv
+python calculate_properties.py --input_csv_file <path_to_input_file> --output_csv_file <path_to_output_file>
 ```
 
----
+#### Arguments:
+- `--input_csv_file` (str, required): The path to the input CSV file containing sequences.
+- `--output_csv_file` (str, required): The path to the output CSV file where the calculated properties will be saved.
+
+#### Example:
+```bash
+python calculate_properties.py --input_csv_file ./data/generated_sequences.csv --output_csv_file ./data/sequence_properties.csv
+```
+
+This command will calculate the properties of the sequences in `generated_sequences.csv` and save the results to `sequence_properties.csv`.
+
 
 ### 3. **Identify AMP Candidates**
 
-The following steps guide you through feature extraction, model training, and identifying new AMP candidates.
+### AMP Discriminator
 
-#### **Feature Extraction**
-Before training the AMP classifier, you must extract features from the sequence data:
+To classify sequences as antimicrobial peptides (AMPs) using the AMP Discriminator, run the following command:
 
-- **Extract Features**:
-   ```bash
-   python src/classification/features.py
-   ```
-   This command processes the input CSV file containing sequence data and generates a CSV file (`top14test.csv`) with extracted features.
+```bash
+python discriminator.py --train_path <path_to_training_csv> --pre_path <path_to_input_csv> --out_path <path_to_output_csv>
+```
 
-#### **Train AMP Discriminator**
-Once the features are extracted, you can proceed to train the discriminator:
+#### Arguments:
+- `--train_path` or `-tp` (str, required): The path to the CSV file containing the training data.
+- `--pre_path` or `-pp` (str, required): The path to the input CSV file containing the sequences to classify.
+- `--out_path` or `-op` (str, required): The path to the output CSV file where the classification results will be saved.
 
-- **Train the Discriminator**:
-   ```bash
-   train_amp_classifier --data_path path/to/classify_all_data_v1.csv --model_output_path path/to/save/xgboost_model.pkl
-   ```
-   This command trains the XGBoost discriminator using the specified feature data and saves the model to the given output path.
+#### Example:
+```bash
+python discriminator.py --train_path ./data/classify_all_data_v1.csv --pre_path ./data/new_sequences.csv --out_path ./results/classified_sequences.csv
+```
 
-#### **Identify New AMP Candidates**
-After training the discriminator, you can identify new sequences to predict whether they are antimicrobial peptides (AMPs):
+This command will classify sequences in `new_sequences.csv` using the model trained on `classify_all_data_v1.csv`, and save the results to `classified_sequences.csv`.
 
-- **Identify AMP**:
-   ```bash
-   classify_amp --train_path path/to/classify_all_data_v1.csv --pre_path path/to/new_sequences.csv --out_path path/to/save/predictions.csv
-   ```
-   This command uses the trained model to identify new sequences from the `new_sequences.csv` file and saves the predictions in the specified output path.
-
----
 
 ### 4. **Run the MIC Scorer**
 

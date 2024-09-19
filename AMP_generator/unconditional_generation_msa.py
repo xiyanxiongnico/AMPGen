@@ -4,7 +4,7 @@ Inputs to the Function:
 
 	•	total_sequences: (int) The total number of sequences you want to generate.
 	•	batch_size: (int) The batch size for sequence generation.
-	•	n_sequences: (int) The number of sequences to generate in each batch.
+	•	n_sequences: (int) The number of sequences in MSA to subsample.
 	•	output_csv_file: (str) The path to the output CSV file where the generated sequences will be saved.
 
 Outputs of the Function:
