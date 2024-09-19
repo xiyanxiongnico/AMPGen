@@ -27,7 +27,7 @@ AMP sequences are generated using two pre-trained order-agnostic autoregressive 
 
 1. **XGBoost-based AMP Classifier**:
    - **Dataset Preparation**: Sequences in the AMP dataset were filtered based on length, retaining those within the range of 5 to 65 aa, resulting in a total of 9,964 AMP-labeled peptide sequences as the positive dataset.
-   - **Feature Extraction**: Features were primarily derived from the PseKRAAC encoding method, QSOrder, and CKSAAP encoding parameters, resulting in 14 categories of 1,311 features.
+   - **Feature Extraction**: Features were primarily derived from the PseKRAAC encoding method and QSOrder encoding parameters, resulting in 14 categories of 1,311 features.
    - **Model Training**: The data was used to train an XGBoost model, with AMP sequences labeled as 1 and nonAMP sequences labeled as 0. Model tuning was conducted based on the F1 score and AUC index using 10-fold cross-validation (k-fold 10) to prevent overfitting.
 
 2. **LSTM Regression-based MIC Predictor**:
@@ -255,7 +255,7 @@ python discriminator.py --train_path <path_to_training_csv> --pre_path <path_to_
 
 #### Example:
 ```bash
-python discriminator.py --train_path ./data/classify_all_data_v1.csv --pre_path ./data/new_sequences.csv --out_path ./results/classified_sequences.csv
+python discriminator.py --train_path ./data/top14Featured_all.csv --pre_path ./data/new_sequences.csv --out_path ./results/classified_sequences.csv
 ```
 
 This command will classify sequences in `new_sequences.csv` using the model trained on `classify_all_data_v1.csv`, and save the results to `classified_sequences.csv`.
