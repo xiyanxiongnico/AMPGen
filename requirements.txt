@@ -1,0 +1,95 @@
+alembic==1.13.2
+aniso8601==9.0.1
+biopython==1.84
+biotite==1.0.1
+biotraj==1.2.1
+blinker==1.8.2
+blosum==2.0.3
+Brotli @ file:///croot/brotli-split_1714483155106/work
+cachetools==5.5.0
+certifi @ file:///croot/certifi_1725551672989/work/certifi
+charset-normalizer @ file:///croot/charset-normalizer_1721748349566/work
+click==8.1.7
+cloudpickle==3.0.0
+contourpy==1.3.0
+cycler==0.12.1
+databricks-sdk==0.32.2
+Deprecated==1.2.14
+docker==7.1.0
+evodiff==1.1.0
+fair-esm==2.0.0
+fasteners==0.19
+filelock @ file:///croot/filelock_1700591183607/work
+Flask==3.0.3
+fonttools==4.53.1
+gitdb==4.0.11
+GitPython==3.1.43
+gmpy2 @ file:///work/ci_py311/gmpy2_1676839849213/work
+google-auth==2.34.0
+graphene==3.3
+graphql-core==3.2.4
+graphql-relay==3.2.0
+greenlet==3.1.0
+GridDataFormats==1.0.2
+gunicorn==23.0.0
+idna==3.10
+importlib_metadata==8.4.0
+itsdangerous==2.2.0
+Jinja2 @ file:///croot/jinja2_1716993405101/work
+joblib==1.4.2
+kiwisolver==1.4.7
+lmdb==1.5.1
+Mako==1.3.5
+Markdown==3.7
+MarkupSafe==2.1.5
+matplotlib==3.9.2
+mda-xdrlib==0.2.0
+MDAnalysis==2.7.0
+mkl-service==2.4.0
+mkl_fft @ file:///croot/mkl_fft_1725370245198/work
+mkl_random @ file:///croot/mkl_random_1725370241878/work
+mlflow==2.16.2
+mlflow-skinny==2.16.2
+mmtf-python==1.1.3
+mpmath @ file:///croot/mpmath_1690848262763/work
+mrcfile==1.5.3
+msgpack==1.1.0
+networkx @ file:///croot/networkx_1717597493534/work
+numpy @ file:///croot/numpy_and_numpy_base_1725470312869/work/dist/numpy-2.0.1-cp311-cp311-linux_x86_64.whl#sha256=372b9067cf9c96d8662c6f20ef49eeda43f0f8d2f074820224c954d8d8fae7bc
+nvidia-nccl-cu12==2.23.4
+opentelemetry-api==1.27.0
+opentelemetry-sdk==1.27.0
+opentelemetry-semantic-conventions==0.48b0
+packaging==24.1
+pandas==2.2.2
+pdb-tools==2.5.0
+pillow @ file:///croot/pillow_1721059439630/work
+protobuf==5.28.2
+pyarrow==17.0.0
+pyasn1==0.6.1
+pyasn1_modules==0.4.1
+pyparsing==3.1.4
+PySocks @ file:///work/ci_py311/pysocks_1676822712504/work
+python-dateutil==2.9.0.post0
+pytz==2024.2
+PyYAML @ file:///croot/pyyaml_1698096049011/work
+requests @ file:///croot/requests_1721410876868/work
+rsa==4.9
+scikit-learn==1.5.0
+scipy==1.14.1
+seaborn==0.13.2
+sequence-models==1.8.0
+six==1.16.0
+smmap==5.0.1
+SQLAlchemy==2.0.35
+sqlparse==0.5.1
+sympy @ file:///croot/sympy_1724938189289/work
+threadpoolctl==3.5.0
+tqdm==4.66.5
+typing_extensions==4.12.2
+tzdata==2024.1
+urllib3 @ file:///croot/urllib3_1718912636303/work
+Werkzeug==3.0.4
+wrapt==1.16.0
+xgboost==2.1.1
+zipp==3.20.2
