@@ -1,8 +1,4 @@
-#!/usr/bin/env python3 -u
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-#
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
+
 
 import argparse
 import pathlib
@@ -107,7 +103,6 @@ def run(args):
                 result = {"label": label}
                 truncate_len = min(args.truncation_seq_length, len(strs[i]))
                 # Call clone on tensors to ensure tensors are not views into a larger representation
-                # See https://github.com/pytorch/pytorch/issues/1995
                 if "per_tok" in args.include:
                     result["representations"] = {
                         layer: t[i, 1 : truncate_len + 1].clone()

@@ -80,16 +80,18 @@ def get_embedding(model_location, fasta_file, output_dir, toks_per_batch=4096, t
                 torch.save(result, output_file)
 
 # step 3
-def load_embeding(from_folder_path, from_csv_path):
+def load_embeding(from_folder_path, from_csv_path, to_device):
     folder_path = from_folder_path
     csv_file_path = from_csv_path
+    device = torch.device('cuda' if torch.cuda.is_available() and to_device == 'cuda' else 'cpu')
+    print(f"Running on {device}")
 
     file_names = sorted([f for f in os.listdir(folder_path) if f.endswith('.pt')], key=lambda x: int(x.split('.')[0]))
     mean_representations_list = []
 
     for file_name in file_names:
         file_path = os.path.join(folder_path, file_name)
-        mean_representation = torch.load(file_path)['mean_representations'][36].numpy().tolist()
+        mean_representation = torch.load(file_path,  map_location=device, weights_only=True)['mean_representations'][36].numpy().tolist()
         mean_representations_list.append(mean_representation)
 
     mean_representations_df = pd.DataFrame(mean_representations_list)
@@ -117,9 +119,11 @@ class LSTMModel(nn.Module):
         out = self.fc(out)
         return out
 
-def get_predicted_mic(new_data, scaler_data_path, model_path, result_path):
-    X_new = new_data.iloc[:, 1:].values
+def get_predicted_mic(new_data, from_csv_path, scaler_data_path, model_path, result_path, to_device):
+    device = torch.device('cuda' if torch.cuda.is_available() and to_device == 'cuda' else 'cpu')
+    print(f"Running on {device}")
 
+    X_new = new_data.iloc[:, 1:].values
     with open(scaler_data_path, 'rb') as f:
         scaler = pickle.load(f)
     X_new = scaler.transform(X_new)
@@ -129,9 +133,9 @@ def get_predicted_mic(new_data, scaler_data_path, model_path, result_path):
     new_dataset = TensorDataset(X_new.unsqueeze(1))
     new_loader = DataLoader(new_dataset, batch_size=64, shuffle=False)
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = LSTMModel(input_size=X_new.size(1), hidden_size=128, num_layers=2, output_size=1, dropout_rate=0.7).to(device)
-    model.load_state_dict(torch.load(model_path))
+    model_state_dict = torch.load(model_path, map_location=device, weights_only=True)
+    model.load_state_dict(model_state_dict)
     model.eval()
 
     new_predictions = []
@@ -142,8 +146,7 @@ def get_predicted_mic(new_data, scaler_data_path, model_path, result_path):
             new_predictions.extend(outputs.squeeze().cpu().numpy())
 
     new_predictions = pd.DataFrame(new_predictions, columns=['Predicted Values'])
-    df_info  = pd.DataFrame()
-    df_info['Sequence'] = new_data.iloc[:,0]
+    df_info  = pd.read_csv(from_csv_path)
     df_merged = pd.concat([df_info, new_predictions], axis=1)
 
     df_merged.to_csv(result_path, index=False)
@@ -159,6 +162,7 @@ def main():
     parser.add_argument('--scaler_data_path', required=True, type=str)
     parser.add_argument('--model_path', required=True, type=str)
     parser.add_argument('--result_path', required=True, type=str)
+    parser.add_argument('--to_device',default='cuda', type=str)
 
     args = parser.parse_args()
 
@@ -167,9 +171,9 @@ def main():
     print(f'[i] get_embedding')
     get_embedding(args.esm_model_location, args.to_fasta_path, args.output_dir, args.repr_layers)
     print(f'[i] load_embeding')
-    df = load_embeding(args.output_dir, args.from_csv_path)
-    print(f'[i] get_predicted_mic {df.shape}')
-    get_predicted_mic(df, args.scaler_data_path, args.model_path, args.result_path)
+    df = load_embeding(args.output_dir, args.from_csv_path, args.to_device)
+    print(f'[i] get_predicted_mic')
+    get_predicted_mic(df, args.from_csv_path, args.scaler_data_path, args.model_path, args.result_path, args.to_device)
 
 if __name__ == '__main__':
     main()

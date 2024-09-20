@@ -1,14 +1,4 @@
 
-# src/analysis/calculate_properties.py
-
-"""
-
-Command-Line Usage:
-    calculate_properties --input_csv_file /path/to/input.csv --output_csv_file /path/to/output.csv
-
-"""
-
-
 from Bio.SeqUtils import molecular_weight
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from Bio.Seq import Seq
@@ -106,7 +96,8 @@ def calculate_properties(input_csv_file, output_csv_file):
     :param output_csv_file: Path to the output CSV file for saving results
     """
     df = pd.read_csv(input_csv_file)
-    all_seq = df['Generated Sequence'].tolist()
+    all_seq = df['Sequence'].tolist()
+    ID = df['ID'].tolist()
 
     molecular_weights_list = []
     charges_list = []
@@ -120,6 +111,7 @@ def calculate_properties(input_csv_file, output_csv_file):
         hydrophobicity_list.append(analysis.hydrophobic_proportion[0])
 
     df_out = pd.DataFrame({
+        'ID': ID,
         'Sequence': all_seq,
         'Molecular Weights': molecular_weights_list,
         'Net Charges': charges_list,

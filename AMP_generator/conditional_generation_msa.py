@@ -1,27 +1,17 @@
-
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Mon May 13 21:24:54 2024
-
 Inputs to the Function:
 
 	•	directory_path: (str) The path to the directory containing MSA files.
 	•	output_excel_file: (str) The path to the output Excel file where the generated sequences will be saved.
 	•	max_retries: (int, optional) The maximum number of retries for each file. Default is 5.
+    •	to_device: (str) Device to run the model, cuda or cpu.
+    •	total_sequences: (int) The total number of sequences you want to generate.
 
 Outputs of the Function:
 
 	•	Excel File: An Excel file containing the results with columns for filename, number of sequences, reference sequence, reference length, generated sequence, and generated length.
-
-Command-Line Usage Example
-conditional_generation_msa --directory_path /path/to/msa/files --output_csv_file /path/to/output.csv --max_retries 5
-
-@author: xiyanxiong
-
 """
-# src/generation/conditional_generation_msa.py
+
 
 import os
 import random
@@ -30,7 +20,7 @@ import pandas as pd
 from evodiff.pretrained import MSA_OA_DM_MAXSUB
 from evodiff.generate_msa import generate_query_oadm_msa_simple
 
-def generate_conditional_msa_sequences(directory_path, output_csv_file, max_retries=5):
+def generate_conditional_msa_sequences(directory_path, output_csv_file, max_retries=5, to_device='cuda', total_sequences=5):
     """
     Generates AMP sequences using EvoDiff Conditional Generation with MSA_OA_DM_MAXSUB and saves the results to a CSV file.
 
@@ -38,10 +28,12 @@ def generate_conditional_msa_sequences(directory_path, output_csv_file, max_retr
         directory_path (str): Path to the directory containing MSA files.
         output_csv_file (str): Path to the output CSV file.
         max_retries (int): Maximum number of retries for each file (default: 5).
+        to_device: (str) Device to run the model, cuda or cpu.
+        total_sequences: (int) The total number of sequences you want to generate.
     """
     checkpoint = MSA_OA_DM_MAXSUB()
     model, collater, tokenizer, scheme = checkpoint
-    model.to('cuda')
+    model.to(to_device)
     
     output_data = []
 
@@ -64,7 +56,7 @@ def generate_conditional_msa_sequences(directory_path, output_csv_file, max_retr
                 reference_length = len(reference_sequence.replace('-', ''))  # Remove gaps and get length
 
             # Run the model 5 times with random seq_length each time
-            for _ in range(5):
+            for _ in range(total_sequences):
                 retries = 0
                 while retries < max_retries:
                     try:
@@ -73,7 +65,7 @@ def generate_conditional_msa_sequences(directory_path, output_csv_file, max_retr
                         
                         # Running the model
                         tokenized_sample, generated_sequence = generate_query_oadm_msa_simple(
-                            path_to_msa, model, tokenizer, n_sequences, seq_length, device='cuda', selection_type=selection_type)
+                            path_to_msa, model, tokenizer, n_sequences, seq_length, device=to_device, selection_type=selection_type)
                         
                         clean_generated_sequence = re.sub('[!-]', '', generated_sequence[0][0])
                         generated_length = len(clean_generated_sequence)
@@ -89,8 +81,14 @@ def generate_conditional_msa_sequences(directory_path, output_csv_file, max_retr
                             print(f"Retrying {filename} ({retries}/{max_retries})...")
 
     # Creating a CSV file with the results
-    df = pd.DataFrame(output_data, columns=["Filename", "Number of Sequences", "Reference Sequence", "Reference Length", "Generated Sequence", "Generated Length"])
+    df = pd.DataFrame({
+    "ID": range(len(output_data)),  # Create a sequence of numbers for the ID column
+    "Sequence": [row[4] for row in output_data]  # Extract the Sequence from output_data
+})
+
     df.to_csv(output_csv_file, index=False)
+
+
 
     print(f"Data saved to {output_csv_file}")
 
@@ -100,8 +98,10 @@ if __name__ == "__main__":
     parser.add_argument('--directory_path', type=str, required=True, help="Path to the directory containing MSA files")
     parser.add_argument('--output_csv_file', type=str, required=True, help="Path to the output CSV file")
     parser.add_argument('--max_retries', type=int, default=5, help="Maximum number of retries for each file")
+    parser.add_argument('--to_device', type=str, default="cuda", help="Device to run the model, cuda or cpu")
+    parser.add_argument('--total_sequences', type=int, required=True, help="Total number of sequences to generate")
     
     args = parser.parse_args()
-    generate_conditional_msa_sequences(args.directory_path, args.output_csv_file, args.max_retries)
+    generate_conditional_msa_sequences(args.directory_path, args.output_csv_file, args.max_retries, args.to_device, args.total_sequences)
     
 
