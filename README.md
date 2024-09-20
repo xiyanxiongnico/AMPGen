@@ -101,7 +101,7 @@ Welcome to the AMPGen project! This guide will walk you through the steps requir
 
 ### Prerequisites
 
-To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. We'll guide you through setting up a clean conda environment, installing EvoDiff, and then the necessary dependencies. Required Python libraries: `numpy`, `pandas`, `tqdm`, `scikit-learn`, `xgboost`.
+To use the AMPGen system, you need Python 3.11 and a few essential libraries. We'll guide you through setting up a clean conda environment, installing EvoDiff, and then the necessary dependencies. Required Python libraries: `numpy`, `pandas`, `tqdm`, `scikit-learn`, `xgboost`.
 
 ### Setting Up the Environment
 
@@ -115,31 +115,21 @@ To use the AMPGen system, you need Python 3.8.5 and a few essential libraries. W
 2. **Create a Conda Environment**  
    Next, create a new conda environment with Python 3.8.5, which is the recommended version for this project:
    ```bash
-   conda create --name AMPGen python=3.8.5
+   conda create --name AMPGen python=3.11
    conda activate AMPGen
    ```
 
-3. **Install EvoDiff**  
-   With the new environment activated, install the EvoDiff package, which is a crucial component of AMPGen:
+3. **Install Environment**  
+   With the new environment activated, install all packages:
    ```bash
-   pip install evodiff
+   pip install  -r requirements.txt
    ```
 
 4. **Install PyTorch and Related Packages**  
    EvoDiff requires PyTorch along with additional libraries. The following example demonstrates the installation of a CPU-compatible version of PyTorch. For optimal performance, adjust the pytorch version based on your system’s specifications. Install the required packages using the following commands:
    ```bash
    conda install pytorch torchvision torchaudio cpuonly -c pytorch
-   conda install pyg -c pyg
-   conda install -c conda-forge torch-scatter
    ```
-
-5. **Install the Other Required Dependencies for the Discriminator and MIC Scorer**  
-   The AMPGen package requires several additional dependencies to run the discriminator and MIC scorer. You can install them using the following command:
-   ```bash
-   pip install numpy pandas tqdm scikit-learn xgboost fair-esm matplotlib torch torchvision torchaudio pickle
-   ``` 
-
-These packages include the required libraries for both the XGBoost-based discriminator (`scikit-learn`, `xgboost`, etc.) and the MIC scorer (`torch`, `ProteinBertModel`, `MSATransformer`, `matplotlib`, etc.).
 
 ---
 
@@ -152,67 +142,71 @@ You can generate AMP sequences using the following commands:
 
 ### Unconditional Generation of AMP Sequences
 
-You can generate antimicrobial peptide (AMP) sequences using EvoDiff's unconditional generation model by running the following command:
+You can generate antimicrobial peptide (AMP) sequences using EvoDiff's unconditional generation model by running the following command in `AMPGen/AMP_generator/unconditional_generation.py`:
 
 ```bash
-python unconditional_generation.py --total_sequences <total_sequences> --batch_size <batch_size> --output_file <path_to_output_file>
+python unconditional_generation.py --total_sequences <total_sequences> --batch_size <batch_size> --output_file <path_to_output_file> --to_device<cuda or cpu>
 ```
 
 #### Arguments:
 - `--total_sequences` (int, required): The total number of sequences to generate.
-- `--batch_size` (int, required): The batch size for sequence generation.
+- `--batch_size` (int, optional): The batch size for sequence generation (default=1).
 - `--output_file` (str, required): The path to the output CSV file where the generated sequences will be saved.
+- `--to_device`(str, optional):Device to run the model, cuda or cpu (default=cuda).
 
 #### Example:
 ```bash
-python unconditional_generation.py --total_sequences 100 --batch_size 10 --output_file ./data/generated_sequences.csv
+python unconditional_generation.py --total_sequences 10  --output_file ../data/example/generated_sequences.csv -to_device cpu
 ```
 
-This command will generate 100 sequences in batches of 10 and save them to `generated_sequences.csv`.
+This command will generate 10 sequences  and save them to `generated_sequences.csv`.
 
 
 
 ### Unconditional Generation of AMP Sequences with MSA
 
-You can generate antimicrobial peptide (AMP) sequences using EvoDiff's unconditional generation model with MSA by running the following command:
+You can generate antimicrobial peptide (AMP) sequences using EvoDiff's unconditional generation model with MSA by running the following command in `AMPGen/AMP_generator/unconditional_generation_msa.py`:
 
 ```bash
-python unconditional_generation_msa.py --total_sequences <total_sequences> --batch_size <batch_size> --n_sequences <n_sequences> --output_csv_file <path_to_output_file>
+python unconditional_generation_msa.py --total_sequences <total_sequences> --batch_size <batch_size> --n_sequences <n_sequences> --output_csv_file <path_to_output_file> --to_device<cuda or cpu>
 ```
 
 #### Arguments:
 - `--total_sequences` (int, required): The total number of sequences to generate.
-- `--batch_size` (int, required): The batch size for sequence generation.
-- `--n_sequences` (int, required): The number of sequences in MSA to subsample.
+- `--batch_size` (int, optional): The batch size for sequence generation (default=1).
+- `--n_sequences` (int, optional): The number of sequences in MSA to subsample (default=64).
 - `--output_csv_file` (str, required): The path to the output CSV file where the generated sequences will be saved.
+- `--to_device`(str,optional):Device to run the model, cuda or cpu (default=cuda).
 
 #### Example:
 ```bash
-python unconditional_generation_msa.py --total_sequences 100 --batch_size 10 --n_sequences 64 --output_csv_file ./data/generated_msa_sequences.csv
+python unconditional_generation_msa.py --total_sequences 10 --output_csv_file ../data/example/generated_msa_sequences.csv
 ```
 
-This command will generate 100 sequences in batches of 10 and save them to `generated_msa_sequences.csv`.
+This command will generate 100 sequences in batches of 10 and save them to `generated_msa_sequences.csv`.When using this model, significant computational power is required, and we recommend utilizing a GPU for optimal performance.
 
 
 ### Conditional Generation of AMP Sequences with MSA
 
-You can generate antimicrobial peptide (AMP) sequences using EvoDiff's conditional generation model with MSA by running the following command:
+You can generate antimicrobial peptide (AMP) sequences using EvoDiff's conditional generation model with MSA by running the following command in `AMPGen/AMP_generator/conditional_generation_msa.py`:
 
 ```bash
-python conditional_generation_msa.py --directory_path <path_to_msa_directory> --output_csv_file <path_to_output_file> --max_retries <max_retries>
+python conditional_generation_msa.py --directory_path <path_to_msa_directory> --output_csv_file <path_to_output_file> --max_retries <max_retries> --to_device<cuda or cpu> --total_sequences <total_sequences>
 ```
 
 #### Arguments:
 - `--directory_path` (str, required): Path to the directory containing the MSA files (in `.a3m` format).
 - `--output_csv_file` (str, required): The path to the output CSV file where the generated sequences will be saved.
 - `--max_retries` (int, optional): Maximum number of retries for processing each file (default: 5).
+- `--to_device`(str,optional):Device to run the model, cuda or cpu (default=cuda).
+- `--total_sequences` (int, required): The total number of sequences to generate.
 
 #### Example:
 ```bash
-python conditional_generation_msa.py --directory_path ./msa_files/ --output_csv_file ./data/conditional_generated_sequences.csv --max_retries 5
+python conditional_generation_msa.py --directory_path ../data/example/msa_files/ --output_csv_file ../data/example/conditional_generated_sequences.csv --to_device cpu --total_sequence 10
 ```
 
-This command will process MSA files from the `msa_files` directory and generate sequences, saving the results to `conditional_generated_sequences.csv`.
+This command will process MSA files `example_1944.a3m` from the `msa_files` directory and generate sequences, saving the results to `conditional_generated_sequences.csv`.
 
 
 #### 2. **Calculate Properties of Generated Sequences**
@@ -220,7 +214,7 @@ This command will process MSA files from the `msa_files` directory and generate 
 
 ### Calculate Properties of Generated AMP Sequences
 
-You can calculate the physical and chemical properties of the generated AMP sequences, including molecular weight, net charge, and hydrophobicity, by running the following command:
+You can calculate the physical and chemical properties of the generated AMP sequences, including molecular weight, net charge, and hydrophobicity, by running the following command in `AMPGen/AMP_generator/calculate_properties.py`:
 
 ```bash
 python calculate_properties.py --input_csv_file <path_to_input_file> --output_csv_file <path_to_output_file>
@@ -232,7 +226,7 @@ python calculate_properties.py --input_csv_file <path_to_input_file> --output_cs
 
 #### Example:
 ```bash
-python calculate_properties.py --input_csv_file ./data/generated_sequences.csv --output_csv_file ./data/sequence_properties.csv
+python calculate_properties.py --input_csv_file ../data/example/generated_sequences.csv --output_csv_file ../data/example/sequence_properties.csv
 ```
 
 This command will calculate the properties of the sequences in `generated_sequences.csv` and save the results to `sequence_properties.csv`.
@@ -242,7 +236,7 @@ This command will calculate the properties of the sequences in `generated_sequen
 
 ### AMP Discriminator
 
-To classify sequences as antimicrobial peptides (AMPs) using the AMP Discriminator, run the following command:
+To classify sequences as antimicrobial peptides (AMPs) using the AMP Discriminator, run the following command in `AMPGen/AMP_discriminator/Discriminator_model/discriminator.py`:
 
 ```bash
 python discriminator.py --train_path <path_to_training_csv> --pre_path <path_to_input_csv> --out_path <path_to_output_csv>
@@ -252,13 +246,14 @@ python discriminator.py --train_path <path_to_training_csv> --pre_path <path_to_
 - `--train_path` or `-tp` (str, required): The path to the CSV file containing the training data.
 - `--pre_path` or `-pp` (str, required): The path to the input CSV file containing the sequences to classify.
 - `--out_path` or `-op` (str, required): The path to the output CSV file where the classification results will be saved.
+- `--to_device`(str,optional):Device to run the model, cuda or cpu (default=cuda).
 
 #### Example:
 ```bash
-python discriminator.py --train_path ./data/top14Featured_all.csv --pre_path ./data/new_sequences.csv --out_path ./results/classified_sequences.csv
+python discriminator.py --train_path  ../../data/Discriminator_training_data/top14Featured_all.csv --pre_path ../../data/example/sequence_properties.csv --out_path ../../results/example_classified_sequences.csv --to_device cpu
 ```
 
-This command will classify sequences in `new_sequences.csv` using the model trained on `classify_all_data_v1.csv`, and save the results to `classified_sequences.csv`.
+This command will classify sequences in `sequence_properties.csv` using the model trained on `top14Featured_all.csv`, and save the results to `example_classified_sequences.csv`.
 
 
 ### 4. **Run the MIC Scorer**
@@ -292,9 +287,9 @@ python mic_scorer.py --from_csv_path path/to/sequences.csv --scaler_data_path pa
 ```
 
 #### **Full Command Example**
-Run the entire MIC scoring process from sequence conversion to MIC prediction:
+Run the entire MIC scoring process from sequence conversion to MIC prediction in `AMPGen/MIC_scorer/scorer.py`:
 ```bash
-python mic_scorer.py --from_csv_path path/to/sequences.csv --to_fasta_path path/to/output/sequences.fasta --esm_model_location esm2_t36_3B_UR50D --output_dir path/to/output/embeddings/ --scaler_data_path path/to/scaler.pkl --model_path path/to/model.pth --result_path path/to/save/results.csv
+python scorer.py --from_csv_path ../results/example_classified_sequences.csv --to_fasta_path ../data/example/output/sequences.fasta --output_dir ../data/example/output/embeddings/ --scaler_data_path ./Scorer_model/stpascaler.pkl --model_path ./Scorer_model/1stpa_best_model_checkpoint.pth --result_path ../results/example_results.csv --to_device cpu
 ```
 
 This command:
