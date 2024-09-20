@@ -1,11 +1,4 @@
 
-"""
-train the classifier:
-train_amp_classifier --data_path path/to/classify_all_data_v1.csv --model_output_path path/to/save/xgboost_model.pkl
-
-Command-Line Usage
-classify_amp --train_path path/to/classify_all_data_v1.csv --pre_path path/to/new_sequences.csv --out_path path/to/save/predictions.csv
-"""
 
 import xgboost
 from sklearn import metrics
