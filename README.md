@@ -62,14 +62,22 @@ AMP sequences are generated using two pre-trained order-agnostic autoregressive 
     │   │   ├── classify_amp_v1.csv
     │   │   ├── classify_nonamp_v1.csv
     │   │   └── top14Featured_all.csv
+    │   ├── example
+    │   │   ├── msa_files
+    │   │   │   └── example_1944.a3m
+    │   │   ├── output
+    │   │   │   ├── embeddings
+    │   │   │   └── sequences.fasta
+    │   │   ├── conditional_generated_sequences.csv
+    │   │   ├── generated_msa_sequences.csv
+    │   │   ├── generated_sequences.csv
+    │   │   └── sequence_properties.csv
     │   ├── Scorer_training_data
     │   │   ├── regression_ecoli_all.csv
     │   │   └── regression_stpa_all.csv
     │   ├── combined_database_filtered_v2(1).xlsx
     │   └── combined_database_v2(1).xlsx
     ├── MIC_scorer
-    │   ├── results
-    │   │   └── updatedecolipredictions.csv
     │   ├── Scorer_model
     │   │   ├── 1stpa_best_model_checkpoint.pth
     │   │   ├── 2ecoli_best_model_checkpoint.pth
@@ -83,12 +91,16 @@ AMP sequences are generated using two pre-trained order-agnostic autoregressive 
     │   │   ├── pltlstm.ipynb
     │   │   └── tofasta.py
     │   └── scorer.py
+    ├── results
+    │   ├── example_classified_sequences.csv
+    │   └── example_results.csv    
     ├── .DS_Store
     ├── .gitattributes
     ├── .gitignore
     ├── LICENSE
     ├── print_directory_tree.py
     ├── README.md
+    ├── requirements.txt
     ├── setup.py
     └── test.py
 ```
